@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/style.css">
 
-
+	<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 
@@ -210,85 +210,95 @@
     </section>
 
 
-
 	<section id="about-section" class="ftco-about img ftco-section ftco-no-pb">
-		<div class="container">
-			<div class="row">
-				<div class="row d-flex align-items-stretch">
-					<!-- <div class="row d-flex"> -->
-						<div class="col-md-6 col-lg-5 d-flex">
-							<div class="img-about img d-flex align-items-stretch">
-								<div class="overlay">
-									<div class="row">
-										<div class="col-sm-6 col-md-5">&nbsp;</div>
-										<div class="col-sm-6 col-md-7">
-											<div class="about-info">&nbsp;</div>
-										</div>
-									</div>
-									<div class="skill-mf">
-										<h1 class="big-4">Skills</h1>
-										R/RStudio
-										<div class="progress">
-											<div class="progress-bar" style="width: 85%;" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">
-											</div>
-										</div>
-										STATA
-										<div class="progress">
-											<div class="progress-bar" style="width: 80%;" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
-											</div>
-										</div>
-										SPSS
-										<div class="progress">
-											<div class="progress-bar" style="width: 75%;" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-											</div>
-										</div>
-										DAGitty
-										<div class="progress">
-											<div class="progress-bar" style="width: 95%;" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100">
-											</div>
-										</div>
-										ArcGIS
-										<div class="progress">
-											<div class="progress-bar" style="width: 65%;" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">
-											</div>
-										</div>
-										Data Visualization
-										<div class="progress">
-											<div class="progress-bar" style="width: 70%;" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6 col-lg-7 pl-lg-5 pb-5">
-							<div class="row justify-content-start pb-3">
-								<div class="col-md-12 heading-section ftco-animate">
-									<h1 class="big">About</h1>
-									<h2 class="mb-4">About Me</h2>
-									<p>I'm a public health researcher deeply dedicated to <strong style="color: #ffbd39;">health equity</strong> 
-										and <strong style="color: #ffbd39;">social justice</strong>. My career has revolved around teaching public 
-										health courses, guiding graduate &amp; postgraduate theses, and leading research projects. This trajectory
-										has been shaped by a commitment to addressing health disparities faced by underserved communities.
-										<br /><br />My research interests span a wide array of topics, including 
-										<strong style="color: #ffbd39;">spatial epidemiology</strong>, <strong style="color: #ffbd39;">infectious
-											diseases</strong>, <strong style="color: #ffbd39;">health inequalities</strong> and application of 
-											<strong style="color: #ffbd39;">mediation and moderation analyses</strong>.
-											<br /><br />My publication record demonstrate my ability to analyze large health databases like DHS,
-											coupled with the proficiency in statistical programming languages including 
-											<strong style="color: #ffbd39;">R</strong>, <strong style="color: #ffbd39;">STATA</strong>,
-											<strong style="color: #ffbd39;">ArcGIS</strong>, and <strong style="color: #ffbd39;">SPSS</strong>.
-											With a strong commitment to <strong style="color: #ffbd39;">diversity</strong>,
-											<strong style="color: #ffbd39;">equity</strong>, and <strong style="color: #ffbd39;">inclusion
-												</strong> through my research and community engagement, I promote open science and embrace a growth
-												mindset, always seeking to learn and apply new methodologies. Beyond my academic achievements, I am a 
-												strong proponent of <strong style="color: #ffbd39;">work-life balance</strong> and 
-												<strong style="color: #ffbd39;">gender equality</strong>.</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</section>
+		<div class="container mx-auto p-5">
+		  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+			<!-- Skills Section -->
+			<div class="skills-section">
+			  <h1 class="text-4xl font-bold text-white mb-6">Skills</h1>
+	  
+			  <!-- Skill Progress Bars -->
+			  <div class="mb-4">
+				<p>R/RStudio</p>
+				<div class="w-full bg-gray-300 rounded-full h-2">
+				  <div class="bg-yellow-500 h-2 rounded-full" style="width: 85%;"></div>
+				</div>
+			  </div>
+	  
+			  <div class="mb-4">
+				<p>STATA</p>
+				<div class="w-full bg-gray-300 rounded-full h-2">
+				  <div class="bg-yellow-500 h-2 rounded-full" style="width: 80%;"></div>
+				</div>
+			  </div>
+	  
+			  <div class="mb-4">
+				<p>SPSS</p>
+				<div class="w-full bg-gray-300 rounded-full h-2">
+				  <div class="bg-yellow-500 h-2 rounded-full" style="width: 75%;"></div>
+				</div>
+			  </div>
+	  
+			  <div class="mb-4">
+				<p>DAGitty</p>
+				<div class="w-full bg-gray-300 rounded-full h-2">
+				  <div class="bg-yellow-500 h-2 rounded-full" style="width: 95%;"></div>
+				</div>
+			  </div>
+	  
+			  <div class="mb-4">
+				<p>ArcGIS</p>
+				<div class="w-full bg-gray-300 rounded-full h-2">
+				  <div class="bg-yellow-500 h-2 rounded-full" style="width: 65%;"></div>
+				</div>
+			  </div>
+	  
+			  <div class="mb-4">
+				<p>Data Visualization</p>
+				<div class="w-full bg-gray-300 rounded-full h-2">
+				  <div class="bg-yellow-500 h-2 rounded-full" style="width: 70%;"></div>
+				</div>
+			  </div>
+			</div>
+	  
+<!-- About Section -->
+<div class="about-section">
+	<h1 class="text-4xl font-bold text-white relative mb-6">
+	  About Me
+	  <span class="absolute top-0 left-0 opacity-10 text-9xl font-bold text-white leading-none">About</span>
+	</h1>
+	<p class="text-white leading-relaxed mb-6">
+	  I'm a public health researcher deeply dedicated to 
+	  <span class="text-yellow-500 font-bold">health equity</span> and 
+	  <span class="text-yellow-500 font-bold">social justice</span>. My career has revolved around teaching public 
+	  health courses, guiding graduate & postgraduate theses, and leading research projects. This trajectory has been shaped by 
+	  a commitment to addressing health disparities faced by underserved communities.
+	</p>
+	<p class="text-white leading-relaxed mb-6">
+	  My research interests span a wide array of topics, including 
+	  <span class="text-yellow-500 font-bold">spatial epidemiology</span>, 
+	  <span class="text-yellow-500 font-bold">infectious diseases</span>, 
+	  <span class="text-yellow-500 font-bold">health inequalities</span>, and the application of 
+	  <span class="text-yellow-500 font-bold">mediation and moderation analyses</span>.
+	</p>
+	<p class="text-white leading-relaxed">
+	  My publication record demonstrates my ability to analyze large health databases like DHS, coupled with proficiency in statistical 
+	  programming languages including <span class="text-yellow-500 font-bold">R</span>, 
+	  <span class="text-yellow-500 font-bold">STATA</span>, 
+	  <span class="text-yellow-500 font-bold">ArcGIS</span>, and 
+	  <span class="text-yellow-500 font-bold">SPSS</span>. With a strong commitment to 
+	  <span class="text-yellow-500 font-bold">diversity</span>, 
+	  <span class="text-yellow-500 font-bold">equity</span>, and 
+	  <span class="text-yellow-500 font-bold">inclusion</span> through my research and community engagement, I promote open science and embrace 
+	  a growth mindset, always seeking to learn and apply new methodologies. Beyond my academic achievements, I am a strong proponent of 
+	  <span class="text-yellow-500 font-bold">work-life balance</span> and 
+	  <span class="text-yellow-500 font-bold">gender equality</span>.
+	</p>
+  </div>
+		  </div>
+		</div>
+	  </section>
+	  
 
 
 
