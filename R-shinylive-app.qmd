@@ -1,0 +1,416 @@
+---
+title: "R-shinylive-app"
+format:
+  html: 
+    page-layout: custom
+    resources:
+     - shinylive-sw.js  
+      
+filters:
+  - shinylive
+---
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 1000
+
+
+library(shiny)
+
+#UI component
+ui <- shinyUI(fluidPage(
+  titlePanel("Screening Test Evaluation Web App", windowTitle = "Screening Test Evaluation"),
+  fluidRow(
+    column(width = 2,
+           tags$a(href = "http://www.facebook.com/sharer.php?u=https://ow-raza.shinyapps.io/ScreeningTestEval/", 
+                  target = "_blank", 
+                  tags$img(height = "20px", 
+                           src = "fb2.png")
+           ),
+           tags$a(href = "http://www.linkedin.com/shareArticle?mini=true&url=https://ow-raza.shinyapps.io/ScreeningTestEval/", 
+                  target = "_blank", 
+                  tags$img(height = "20px", 
+                           src = "linkedin.png")
+           ),
+           tags$a(href = "https://github.com/oraza",
+                  target = "_blank",
+                  tags$img(height = "20px", 
+                           src = "github.png")
+           ),
+           tags$a(href = "mailto:?ow.raza@hotmail.com?subject=Feedback on Screening Test Evaluation Web App",
+                  target = "_blank",
+                  tags$img(height = "20px", 
+                           src = "mail.png")
+           )
+    )
+  ),
+  br(),
+  sidebarLayout(
+    sidebarPanel(width = 3,
+                 strong("Insert your data below:", style = "font-family: 'times'; color:blue"),
+                 numericInput("TP",
+                              label = h5("True Positive (a)", style = "font-family: 'times'; color:blue"),
+                              value = 00),
+                 numericInput("FP",
+                              label = h5("False Positive (b)", style = "font-family: 'times'; color:blue"),
+                              value = 00),
+                 numericInput("FN", 
+                              label = h5("False Negative (c)", style = "font-family: 'times'; color:blue"),
+                              value = 00),
+                 numericInput("TN",
+                              label = h5("True Negative (d)", style = "font-family: 'times'; color:blue"),
+                              value = 00),
+                 strong('Author:', style = "font-family: 'times'"),
+                 p(a("Owais Raza,", href="https://ir.linkedin.com/in/owais-raza-7a8b623b",
+                     target="_blank"),"MBBS, Ph.D. candidate (Epidemiology)",br(),
+                   'Dept. of Epidemiology & Biostatistics,',br(),
+                   'Tehran University of Medical Sciences - International campus,',br(),
+                   'Tehran, Iran.', style = "font-family: 'times'")
+                 
+                 ),
+    mainPanel(
+      tabsetPanel(
+        tabPanel("Important note",
+                 br(),
+                 br(),
+                 br(),
+                 strong("Introduction",  align = "left", style = "font-family: 'times'; color:blue"),
+                 p("This web-based app helps you to evaluate screening tool by calculating various diagnostic efficiency statistics.",
+                   br(),
+                   "The four cells (a, b, c, d) capture the four possible relationships between the results of a screening test
+                   and a gold standard diagnosis.",
+                   style = "font-family: 'times'"),
+                 tags$ol(
+                   tags$li("True positive (cell a): when the person scores positive on the screening test and does in fact have the condition.",
+                           style = "font-family: 'times'"), 
+                   tags$li("False positive (cell b): when the person scores positive on the screening test but does not in fact have the condition.",
+                           style = "font-family: 'times'"), 
+                   tags$li("False negative (cell c): when the person scores negative on the screening test but does in fact have the condition.",
+                           style = "font-family: 'times'"),
+                   tags$li("True negative (cell d): when the person scores negative on the screening test and does not in fact have the condition.",
+                           style = "font-family: 'times'")
+                 ),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 p("Source codes are available",
+                   style = "font-family: 'times'",
+                   a("here.", href = "https://github.com/oraza/ScreeningTestEval",
+                     target = "_blank", style = "font-family: 'times'"))
+                 ),
+        tabPanel("Sensitivity",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("sensi"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("sensi.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Sensitivity of the test reflects the probability that the screening test will be positive among those who are diseased.",
+                   style = "font-family: 'times'")
+        ),
+        tabPanel("Specificity", 
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("speci"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("speci.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Specificity of the test reflects the probability that the screening test will be negative among those who do not have the disease.",
+                   style = "font-family: 'times'")),
+        tabPanel("LR +",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("LRpos"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("lrpos.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Positive likelihood ratio (LR+) is the ratio of the sensitivity of a test to the false positive rate. In general,",
+                   strong("the higher the ratio, the better the test is."),"The LR+ is another index of the accuracy of the test and tells
+                   what the odds are that a positive test result has come from a person who has the attribute. When the LR+ is 1, the test is useless.",
+                   style = "font-family: 'times'")),
+        tabPanel("LR -",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("LRneg"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("lrneg.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Negative likelihood ratio (LR-) is the ratio of the false negative rate to the specificity of the test.",
+                   strong("the lower the ratio, the better the test is."),
+                   style = "font-family: 'times'")),
+        tabPanel("PPV",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("ppv"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("ppv.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Positive predictive value is the probability that subjects with a positive screening test truly have the disease.",
+                   style = "font-family: 'times'")),
+        tabPanel("NPV",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("npv"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("npv.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Negative predictive value is the probability that subjects with a negative screening test truly don't have the disease.",
+                   style = "font-family: 'times'")),
+        tabPanel("Kappa",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("kap"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("kap.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("A measure of the degree of nonrandom agreement between observers or measurements of the same categorical variable.",
+                   strong("Complete agreement corresponds to K = 1, and lack of agreement corresponds to K = 0."),
+                   style = "font-family: 'times'"),
+                 p("The value of kappa can be interpreted as follows:",
+                   style = "font-family: 'times'"),
+                 img(src="kapinter2.jpg")),
+        tabPanel("Accuracy",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("acu"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("acc.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Accuracy tells us what proportion of all tests have given the correct result?",
+                   style = "font-family: 'times'")),
+        tabPanel("References",
+                 br(),
+                 br(),
+                 br(),
+                 tags$ol(
+                   tags$li("Streiner DL. Diagnosing tests: Using and misusing diagnostic and screening tests. 
+                           Journal of personality assessment. 2003 Dec 1;81(3):209-19.",
+                           style = "font-family: 'times'"), 
+                   tags$li("McHugh ML. Interrater reliability: the kappa statistic. Biochemia medica. 2012 Oct 15;22(3):276-82.",
+                           style = "font-family: 'times'"), 
+                   tags$li('Richardson R, Trepel D, Perry A, et al. Screening for psychological and mental health
+                           difficulties in young people who offend: a systematic review and decision model. 
+                           Southampton (UK): NIHR Journals Library; 2015 Jan. (Health Technology Assessment, 
+                           No. 19.1.) Available from:',
+                           a("http://www.ncbi.nlm.nih.gov/books/NBK269083/", href = "http://www.ncbi.nlm.nih.gov/books/NBK269083/"), 
+                           'doi: 10.3310/hta19010',
+                           style = "font-family: 'times'")
+                 )
+                 )
+    )
+        )
+        )
+      ))
+#Server component
+server <- function(input, output) {
+  ### functions to be used:
+  ## for indices:
+  sensitivity.val <- function(xx){input$TP/(input$TP+input$FN)}
+  specifivity.val <- function(xy){input$TN/(input$FP+input$TN)}
+  lr.pos <- function(lrp){(input$TP/(input$TP+input$FN))/(1 - (input$TN/(input$FP+input$TN)))}
+  lr.neg <- function(lrn){(1-(input$TP/(input$TP+input$FN)))/(input$TN/(input$FP+input$TN))}
+  ppv.val <- function(aa){input$TP/(input$TP+input$FP)}
+  npv.val <- function(ab){input$TN/(input$TN+input$FN)}
+  
+  ## for 95% CIs
+  sd.err.sen <- function(senci){sqrt((input$TP/(input$TP+input$FN))*(1-(input$TP/(input$TP+input$FN))))/(input$TP+input$FN)}
+  
+  # ci for sensitivity
+  sensi.ciLB <- function(senLB){((input$TP/(input$TP+input$FN)) - 1.96 * (sqrt(((input$TP/(input$TP+input$FN))*(1-(input$TP/(input$TP+input$FN))))/(input$TP+input$FN))))}
+  sensi.ciUB <- function(senUB){((input$TP/(input$TP+input$FN)) + 1.96 * (sqrt(((input$TP/(input$TP+input$FN))*(1-(input$TP/(input$TP+input$FN))))/(input$TP+input$FN))))}
+  
+  # ci for sensitivity
+  speci.ciLB <- function(specLB){((input$TN/(input$FP+input$TN)) - 1.96 * (sqrt(((input$TN/(input$FP+input$TN))*(1-(input$TN/(input$FP+input$TN))))/(input$FP+input$TN))))}
+  speci.ciUB <- function(specUB){((input$TN/(input$FP+input$TN)) + 1.96 * (sqrt(((input$TN/(input$FP+input$TN))*(1-(input$TN/(input$FP+input$TN))))/(input$FP+input$TN))))}
+  
+  # ci for LR+
+  lrpos.ciLB <- function(lrpLB){
+    #SE:
+    lrp.se <- sqrt((1/input$TP)-(1/(input$TP+input$FN))+(1/input$FP)-(1/(input$FP+input$TN)))
+    #95% ci:
+    (input$TP/(input$TP+input$FN))/(1 - (input$TN/(input$FP+input$TN))) / exp(1.96 * lrp.se)
+  }
+  lrpos.ciUB <- function(lrpUB){
+    #SE:
+    lrp.se <- sqrt((1/input$TP)-(1/(input$TP+input$FN))+(1/input$FP) - (1/(input$FP+input$TN)))
+    #95% ci:
+    (input$TP/(input$TP+input$FN))/(1 - (input$TN/(input$FP+input$TN))) * exp(1.96 * lrp.se)
+  }
+  # ci for LR-
+  lrneg.ciLB <- function(lrnLB){
+    #SE:
+    lrn.se <- sqrt((1/input$FN)-(1/(input$TP+input$FN))+(1/input$TN) - (1/(input$FP+input$TN)))
+    #95% ci:
+    (1-(input$TP/(input$TP+input$FN)))/(input$TN/(input$FP+input$TN)) / exp(1.96 * lrn.se)
+  }
+  lrneg.ciUB <- function(lrnUB){
+    #SE:
+    lrn.se <- sqrt((1/input$FN)-(1/(input$TP+input$FN))+(1/input$TN)-(1/(input$FP+input$TN)))
+    #95% ci:
+    (1-(input$TP/(input$TP+input$FN)))/(input$TN/(input$FP+input$TN)) * exp(1.96 * lrn.se)
+  }
+  # ci for ppv
+  ppv.ciLB <- function(ppvLB){
+    #SE:
+    ppv.se <- sqrt(((input$TP/(input$TP+input$FP)) * (1 - (input$TP/(input$TP+input$FP))))/(input$TP+input$FP))
+    #95% ci:
+    (input$TP/(input$TP+input$FP)) - 1.96 * ppv.se
+  }
+  ppv.ciUB <- function(ppvUB){
+    #SE:
+    ppv.se <- sqrt(((input$TP/(input$TP+input$FP)) * (1 - (input$TP/(input$TP+input$FP))))/(input$TP+input$FP))
+    #95% ci:
+    (input$TP/(input$TP+input$FP)) + 1.96 * ppv.se
+  }
+  # ci for npv
+  npv.ciLB <- function(npvLB){
+    #SE:
+    npv.se <- sqrt(((input$TN/(input$TN+input$FN)) * (1 - (input$TN/(input$TN+input$FN))))/(input$FN+input$TN))
+    #95% ci:
+    (input$TN/(input$TN+input$FN)) - 1.96 * npv.se
+  }
+  npv.ciUB <- function(npvUB){
+    #SE:
+    npv.se <- sqrt(((input$TN/(input$TN+input$FN)) * (1 - (input$TN/(input$TN+input$FN))))/(input$FN+input$TN))
+    #95% ci:
+    (input$TN/(input$TN+input$FN)) + 1.96 * npv.se
+  }
+  # ci for kappa
+  kap.ciLB <- function(kLB){
+    #SE:
+    n = input$TP + input$FP + input$FN + input$TN
+    p = (input$TP + input$TN)/n
+    pe = ((input$TP+input$FN)*(input$TP+input$FP) + (input$TN+input$FP)*(input$TN+input$FN))/ (n)^2
+    kap.se <- sqrt((p*(1-p))/((n)*(1-pe)^2))
+    #95% ci:
+    kap <- ((input$TP+input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))/((input$TP + input$FP + input$FN + input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))
+    kap - (1.96 * kap.se)
+  }
+  kap.ciUB <- function(kUB){
+    #SE:
+    n = input$TP + input$FP + input$FN + input$TN
+    p = (input$TP + input$TN)/n
+    pe = ((input$TP+input$FN)*(input$TP+input$FP) + (input$TN+input$FP)*(input$TN+input$FN))/ (n)^2
+    kap.se <- sqrt((p*(1-p))/((n)*(1-pe)^2))
+    #95% ci:
+    kap <- ((input$TP+input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))/((input$TP + input$FP + input$FN + input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))
+    kap + (1.96 * kap.se)
+  }
+  # ci for accuracy
+  acc.ciLB <- function(accLB){
+    #SE:
+    n <- input$TP + input$FP + input$FN + input$TN
+    p <- (input$TP + input$TN)/n
+    acc.se <- sqrt((p * (1 - p))/n) 
+    #95% ci:
+    p - (1.96 * acc.se)
+  }
+  acc.ciUB <- function(accUB){
+    #SE:
+    n <- input$TP + input$FP + input$FN + input$TN
+    p <- (input$TP + input$TN)/n
+    acc.se <- sqrt((p * (1 - p))/n)
+    #95% ci:
+    p + (1.96 * acc.se)
+  }
+  
+  ## Indices:
+  output$sensi <- renderText(
+    round({sensitivity.val(input$xx)}, 3)
+  )
+  output$speci <- renderText(
+    round({specifivity.val(input$xy)}, 3)
+  )
+  output$LRpos <- renderText(
+    round({lr.pos(input$lrp)}, 3)
+    )
+  output$LRneg <- renderText(
+    round({lr.neg(input$lrn)}, 3)
+  )
+  output$ppv <- renderText(
+    round({ppv.val(input$aa)}, 3)
+  )
+  output$npv <- renderText(
+    round({npv.val(input$ab)}, 3)
+  )
+  output$kap <- renderText(
+    {
+      round(((input$TP+input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))/((input$TP + input$FP + input$FN + input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN))), 3)
+    }
+  )
+  output$acu <- renderText(
+    {
+      round((input$TP + input$TN)/(input$TP + input$FP + input$FN + input$TN), digits = 3)
+    }
+  )
+  # 95% CIs
+  output$sensi.95ci <- renderText(
+    round(c({sensi.ciLB(input$senLB)},
+            {sensi.ciUB(input$senUB)}), digits = 3 )
+  )
+  output$speci.95ci <- renderText(
+    round(c({speci.ciLB(input$specLB)},
+            {speci.ciUB(input$specUB)}), digits = 3 )
+  )
+  output$lrpos.95ci <- renderText(
+    round(c({lrpos.ciLB(input$lrpLB)},
+            {lrpos.ciUB(input$lrpUB)}), digits = 3 )
+  )
+  output$lrneg.95ci <- renderText(
+    round(c({lrneg.ciLB(input$lrnLB)},
+            {lrneg.ciUB(input$lrnUB)}), digits = 3 )
+  )
+  output$ppv.95ci <- renderText(
+    round(c({ppv.ciLB(input$ppvLB)},
+            {ppv.ciUB(input$ppvUB)}), digits = 3 )
+  )
+  output$npv.95ci <- renderText(
+    round(c({npv.ciLB(input$npvLB)},
+            {npv.ciUB(input$npvUB)}), digits = 3 )
+  )
+  output$kap.95ci <- renderText(
+    round(c({kap.ciLB(input$kLB)},
+            {kap.ciUB(input$kUB)}), digits = 3 )
+  )
+  output$acc.95ci <- renderText(
+    round(c({acc.ciLB(input$accLB)},
+            {acc.ciUB(input$accUB)}), digits = 3 )
+  )
+}
+
+
+#Create and launch the shiny app
+shinyApp(ui, server)
+```

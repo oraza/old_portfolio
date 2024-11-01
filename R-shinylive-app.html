@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R-shinylive-app</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="R-shinylive-app_files/libs/clipboard/clipboard.min.js"></script>
+<script src="R-shinylive-app_files/libs/quarto-html/quarto.js"></script>
+<script src="R-shinylive-app_files/libs/quarto-html/popper.min.js"></script>
+<script src="R-shinylive-app_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="R-shinylive-app_files/libs/quarto-html/anchor.min.js"></script>
+<link href="R-shinylive-app_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="R-shinylive-app_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="R-shinylive-app_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="R-shinylive-app_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="R-shinylive-app_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="R-shinylive-app_files/libs/quarto-contrib/shinylive-0.8.0/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="R-shinylive-app_files/libs/quarto-contrib/shinylive-0.8.0/shinylive/run-python-blocks.js" type="module"></script>
+<link href="R-shinylive-app_files/libs/quarto-contrib/shinylive-0.8.0/shinylive/shinylive.css" rel="stylesheet">
+<link href="R-shinylive-app_files/libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div class="page-layout-custom">  
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">R-shinylive-app</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 1000
+
+
+library(shiny)
+
+#UI component
+ui &lt;- shinyUI(fluidPage(
+  titlePanel("Screening Test Evaluation Web App", windowTitle = "Screening Test Evaluation"),
+  fluidRow(
+    column(width = 2,
+           tags$a(href = "http://www.facebook.com/sharer.php?u=https://ow-raza.shinyapps.io/ScreeningTestEval/", 
+                  target = "_blank", 
+                  tags$img(height = "20px", 
+                           src = "fb2.png")
+           ),
+           tags$a(href = "http://www.linkedin.com/shareArticle?mini=true&amp;url=https://ow-raza.shinyapps.io/ScreeningTestEval/", 
+                  target = "_blank", 
+                  tags$img(height = "20px", 
+                           src = "linkedin.png")
+           ),
+           tags$a(href = "https://github.com/oraza",
+                  target = "_blank",
+                  tags$img(height = "20px", 
+                           src = "github.png")
+           ),
+           tags$a(href = "mailto:?ow.raza@hotmail.com?subject=Feedback on Screening Test Evaluation Web App",
+                  target = "_blank",
+                  tags$img(height = "20px", 
+                           src = "mail.png")
+           )
+    )
+  ),
+  br(),
+  sidebarLayout(
+    sidebarPanel(width = 3,
+                 strong("Insert your data below:", style = "font-family: 'times'; color:blue"),
+                 numericInput("TP",
+                              label = h5("True Positive (a)", style = "font-family: 'times'; color:blue"),
+                              value = 00),
+                 numericInput("FP",
+                              label = h5("False Positive (b)", style = "font-family: 'times'; color:blue"),
+                              value = 00),
+                 numericInput("FN", 
+                              label = h5("False Negative (c)", style = "font-family: 'times'; color:blue"),
+                              value = 00),
+                 numericInput("TN",
+                              label = h5("True Negative (d)", style = "font-family: 'times'; color:blue"),
+                              value = 00),
+                 strong('Author:', style = "font-family: 'times'"),
+                 p(a("Owais Raza,", href="https://ir.linkedin.com/in/owais-raza-7a8b623b",
+                     target="_blank"),"MBBS, Ph.D. candidate (Epidemiology)",br(),
+                   'Dept. of Epidemiology &amp; Biostatistics,',br(),
+                   'Tehran University of Medical Sciences - International campus,',br(),
+                   'Tehran, Iran.', style = "font-family: 'times'")
+                 
+                 ),
+    mainPanel(
+      tabsetPanel(
+        tabPanel("Important note",
+                 br(),
+                 br(),
+                 br(),
+                 strong("Introduction",  align = "left", style = "font-family: 'times'; color:blue"),
+                 p("This web-based app helps you to evaluate screening tool by calculating various diagnostic efficiency statistics.",
+                   br(),
+                   "The four cells (a, b, c, d) capture the four possible relationships between the results of a screening test
+                   and a gold standard diagnosis.",
+                   style = "font-family: 'times'"),
+                 tags$ol(
+                   tags$li("True positive (cell a): when the person scores positive on the screening test and does in fact have the condition.",
+                           style = "font-family: 'times'"), 
+                   tags$li("False positive (cell b): when the person scores positive on the screening test but does not in fact have the condition.",
+                           style = "font-family: 'times'"), 
+                   tags$li("False negative (cell c): when the person scores negative on the screening test but does in fact have the condition.",
+                           style = "font-family: 'times'"),
+                   tags$li("True negative (cell d): when the person scores negative on the screening test and does not in fact have the condition.",
+                           style = "font-family: 'times'")
+                 ),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 br(),
+                 p("Source codes are available",
+                   style = "font-family: 'times'",
+                   a("here.", href = "https://github.com/oraza/ScreeningTestEval",
+                     target = "_blank", style = "font-family: 'times'"))
+                 ),
+        tabPanel("Sensitivity",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("sensi"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("sensi.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Sensitivity of the test reflects the probability that the screening test will be positive among those who are diseased.",
+                   style = "font-family: 'times'")
+        ),
+        tabPanel("Specificity", 
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("speci"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("speci.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Specificity of the test reflects the probability that the screening test will be negative among those who do not have the disease.",
+                   style = "font-family: 'times'")),
+        tabPanel("LR +",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("LRpos"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("lrpos.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Positive likelihood ratio (LR+) is the ratio of the sensitivity of a test to the false positive rate. In general,",
+                   strong("the higher the ratio, the better the test is."),"The LR+ is another index of the accuracy of the test and tells
+                   what the odds are that a positive test result has come from a person who has the attribute. When the LR+ is 1, the test is useless.",
+                   style = "font-family: 'times'")),
+        tabPanel("LR -",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("LRneg"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("lrneg.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Negative likelihood ratio (LR-) is the ratio of the false negative rate to the specificity of the test.",
+                   strong("the lower the ratio, the better the test is."),
+                   style = "font-family: 'times'")),
+        tabPanel("PPV",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("ppv"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("ppv.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Positive predictive value is the probability that subjects with a positive screening test truly have the disease.",
+                   style = "font-family: 'times'")),
+        tabPanel("NPV",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("npv"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("npv.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Negative predictive value is the probability that subjects with a negative screening test truly don't have the disease.",
+                   style = "font-family: 'times'")),
+        tabPanel("Kappa",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("kap"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("kap.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("A measure of the degree of nonrandom agreement between observers or measurements of the same categorical variable.",
+                   strong("Complete agreement corresponds to K = 1, and lack of agreement corresponds to K = 0."),
+                   style = "font-family: 'times'"),
+                 p("The value of kappa can be interpreted as follows:",
+                   style = "font-family: 'times'"),
+                 img(src="kapinter2.jpg")),
+        tabPanel("Accuracy",
+                 br(),
+                 h5('Point estimate', style = "font-family: 'times'; color: blue"),
+                 verbatimTextOutput("acu"),
+                 h5("95% confidence interval", align = "left", style = "font-family: 'times'; color:blue"),
+                 verbatimTextOutput("acc.95ci"),
+                 br(),
+                 br(),
+                 br(),
+                 strong("Note", style = "font-family: 'times'; color:blue"),
+                 p("Accuracy tells us what proportion of all tests have given the correct result?",
+                   style = "font-family: 'times'")),
+        tabPanel("References",
+                 br(),
+                 br(),
+                 br(),
+                 tags$ol(
+                   tags$li("Streiner DL. Diagnosing tests: Using and misusing diagnostic and screening tests. 
+                           Journal of personality assessment. 2003 Dec 1;81(3):209-19.",
+                           style = "font-family: 'times'"), 
+                   tags$li("McHugh ML. Interrater reliability: the kappa statistic. Biochemia medica. 2012 Oct 15;22(3):276-82.",
+                           style = "font-family: 'times'"), 
+                   tags$li('Richardson R, Trepel D, Perry A, et al. Screening for psychological and mental health
+                           difficulties in young people who offend: a systematic review and decision model. 
+                           Southampton (UK): NIHR Journals Library; 2015 Jan. (Health Technology Assessment, 
+                           No. 19.1.) Available from:',
+                           a("http://www.ncbi.nlm.nih.gov/books/NBK269083/", href = "http://www.ncbi.nlm.nih.gov/books/NBK269083/"), 
+                           'doi: 10.3310/hta19010',
+                           style = "font-family: 'times'")
+                 )
+                 )
+    )
+        )
+        )
+      ))
+#Server component
+server &lt;- function(input, output) {
+  ### functions to be used:
+  ## for indices:
+  sensitivity.val &lt;- function(xx){input$TP/(input$TP+input$FN)}
+  specifivity.val &lt;- function(xy){input$TN/(input$FP+input$TN)}
+  lr.pos &lt;- function(lrp){(input$TP/(input$TP+input$FN))/(1 - (input$TN/(input$FP+input$TN)))}
+  lr.neg &lt;- function(lrn){(1-(input$TP/(input$TP+input$FN)))/(input$TN/(input$FP+input$TN))}
+  ppv.val &lt;- function(aa){input$TP/(input$TP+input$FP)}
+  npv.val &lt;- function(ab){input$TN/(input$TN+input$FN)}
+  
+  ## for 95% CIs
+  sd.err.sen &lt;- function(senci){sqrt((input$TP/(input$TP+input$FN))*(1-(input$TP/(input$TP+input$FN))))/(input$TP+input$FN)}
+  
+  # ci for sensitivity
+  sensi.ciLB &lt;- function(senLB){((input$TP/(input$TP+input$FN)) - 1.96 * (sqrt(((input$TP/(input$TP+input$FN))*(1-(input$TP/(input$TP+input$FN))))/(input$TP+input$FN))))}
+  sensi.ciUB &lt;- function(senUB){((input$TP/(input$TP+input$FN)) + 1.96 * (sqrt(((input$TP/(input$TP+input$FN))*(1-(input$TP/(input$TP+input$FN))))/(input$TP+input$FN))))}
+  
+  # ci for sensitivity
+  speci.ciLB &lt;- function(specLB){((input$TN/(input$FP+input$TN)) - 1.96 * (sqrt(((input$TN/(input$FP+input$TN))*(1-(input$TN/(input$FP+input$TN))))/(input$FP+input$TN))))}
+  speci.ciUB &lt;- function(specUB){((input$TN/(input$FP+input$TN)) + 1.96 * (sqrt(((input$TN/(input$FP+input$TN))*(1-(input$TN/(input$FP+input$TN))))/(input$FP+input$TN))))}
+  
+  # ci for LR+
+  lrpos.ciLB &lt;- function(lrpLB){
+    #SE:
+    lrp.se &lt;- sqrt((1/input$TP)-(1/(input$TP+input$FN))+(1/input$FP)-(1/(input$FP+input$TN)))
+    #95% ci:
+    (input$TP/(input$TP+input$FN))/(1 - (input$TN/(input$FP+input$TN))) / exp(1.96 * lrp.se)
+  }
+  lrpos.ciUB &lt;- function(lrpUB){
+    #SE:
+    lrp.se &lt;- sqrt((1/input$TP)-(1/(input$TP+input$FN))+(1/input$FP) - (1/(input$FP+input$TN)))
+    #95% ci:
+    (input$TP/(input$TP+input$FN))/(1 - (input$TN/(input$FP+input$TN))) * exp(1.96 * lrp.se)
+  }
+  # ci for LR-
+  lrneg.ciLB &lt;- function(lrnLB){
+    #SE:
+    lrn.se &lt;- sqrt((1/input$FN)-(1/(input$TP+input$FN))+(1/input$TN) - (1/(input$FP+input$TN)))
+    #95% ci:
+    (1-(input$TP/(input$TP+input$FN)))/(input$TN/(input$FP+input$TN)) / exp(1.96 * lrn.se)
+  }
+  lrneg.ciUB &lt;- function(lrnUB){
+    #SE:
+    lrn.se &lt;- sqrt((1/input$FN)-(1/(input$TP+input$FN))+(1/input$TN)-(1/(input$FP+input$TN)))
+    #95% ci:
+    (1-(input$TP/(input$TP+input$FN)))/(input$TN/(input$FP+input$TN)) * exp(1.96 * lrn.se)
+  }
+  # ci for ppv
+  ppv.ciLB &lt;- function(ppvLB){
+    #SE:
+    ppv.se &lt;- sqrt(((input$TP/(input$TP+input$FP)) * (1 - (input$TP/(input$TP+input$FP))))/(input$TP+input$FP))
+    #95% ci:
+    (input$TP/(input$TP+input$FP)) - 1.96 * ppv.se
+  }
+  ppv.ciUB &lt;- function(ppvUB){
+    #SE:
+    ppv.se &lt;- sqrt(((input$TP/(input$TP+input$FP)) * (1 - (input$TP/(input$TP+input$FP))))/(input$TP+input$FP))
+    #95% ci:
+    (input$TP/(input$TP+input$FP)) + 1.96 * ppv.se
+  }
+  # ci for npv
+  npv.ciLB &lt;- function(npvLB){
+    #SE:
+    npv.se &lt;- sqrt(((input$TN/(input$TN+input$FN)) * (1 - (input$TN/(input$TN+input$FN))))/(input$FN+input$TN))
+    #95% ci:
+    (input$TN/(input$TN+input$FN)) - 1.96 * npv.se
+  }
+  npv.ciUB &lt;- function(npvUB){
+    #SE:
+    npv.se &lt;- sqrt(((input$TN/(input$TN+input$FN)) * (1 - (input$TN/(input$TN+input$FN))))/(input$FN+input$TN))
+    #95% ci:
+    (input$TN/(input$TN+input$FN)) + 1.96 * npv.se
+  }
+  # ci for kappa
+  kap.ciLB &lt;- function(kLB){
+    #SE:
+    n = input$TP + input$FP + input$FN + input$TN
+    p = (input$TP + input$TN)/n
+    pe = ((input$TP+input$FN)*(input$TP+input$FP) + (input$TN+input$FP)*(input$TN+input$FN))/ (n)^2
+    kap.se &lt;- sqrt((p*(1-p))/((n)*(1-pe)^2))
+    #95% ci:
+    kap &lt;- ((input$TP+input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))/((input$TP + input$FP + input$FN + input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))
+    kap - (1.96 * kap.se)
+  }
+  kap.ciUB &lt;- function(kUB){
+    #SE:
+    n = input$TP + input$FP + input$FN + input$TN
+    p = (input$TP + input$TN)/n
+    pe = ((input$TP+input$FN)*(input$TP+input$FP) + (input$TN+input$FP)*(input$TN+input$FN))/ (n)^2
+    kap.se &lt;- sqrt((p*(1-p))/((n)*(1-pe)^2))
+    #95% ci:
+    kap &lt;- ((input$TP+input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))/((input$TP + input$FP + input$FN + input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))
+    kap + (1.96 * kap.se)
+  }
+  # ci for accuracy
+  acc.ciLB &lt;- function(accLB){
+    #SE:
+    n &lt;- input$TP + input$FP + input$FN + input$TN
+    p &lt;- (input$TP + input$TN)/n
+    acc.se &lt;- sqrt((p * (1 - p))/n) 
+    #95% ci:
+    p - (1.96 * acc.se)
+  }
+  acc.ciUB &lt;- function(accUB){
+    #SE:
+    n &lt;- input$TP + input$FP + input$FN + input$TN
+    p &lt;- (input$TP + input$TN)/n
+    acc.se &lt;- sqrt((p * (1 - p))/n)
+    #95% ci:
+    p + (1.96 * acc.se)
+  }
+  
+  ## Indices:
+  output$sensi &lt;- renderText(
+    round({sensitivity.val(input$xx)}, 3)
+  )
+  output$speci &lt;- renderText(
+    round({specifivity.val(input$xy)}, 3)
+  )
+  output$LRpos &lt;- renderText(
+    round({lr.pos(input$lrp)}, 3)
+    )
+  output$LRneg &lt;- renderText(
+    round({lr.neg(input$lrn)}, 3)
+  )
+  output$ppv &lt;- renderText(
+    round({ppv.val(input$aa)}, 3)
+  )
+  output$npv &lt;- renderText(
+    round({npv.val(input$ab)}, 3)
+  )
+  output$kap &lt;- renderText(
+    {
+      round(((input$TP+input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN)))/((input$TP + input$FP + input$FN + input$TN)-((((input$TP+input$FP)*(input$TP+input$FN))+((input$FN+input$TN)*(input$FP+input$TN)))/(input$TP + input$FP + input$FN + input$TN))), 3)
+    }
+  )
+  output$acu &lt;- renderText(
+    {
+      round((input$TP + input$TN)/(input$TP + input$FP + input$FN + input$TN), digits = 3)
+    }
+  )
+  # 95% CIs
+  output$sensi.95ci &lt;- renderText(
+    round(c({sensi.ciLB(input$senLB)},
+            {sensi.ciUB(input$senUB)}), digits = 3 )
+  )
+  output$speci.95ci &lt;- renderText(
+    round(c({speci.ciLB(input$specLB)},
+            {speci.ciUB(input$specUB)}), digits = 3 )
+  )
+  output$lrpos.95ci &lt;- renderText(
+    round(c({lrpos.ciLB(input$lrpLB)},
+            {lrpos.ciUB(input$lrpUB)}), digits = 3 )
+  )
+  output$lrneg.95ci &lt;- renderText(
+    round(c({lrneg.ciLB(input$lrnLB)},
+            {lrneg.ciUB(input$lrnUB)}), digits = 3 )
+  )
+  output$ppv.95ci &lt;- renderText(
+    round(c({ppv.ciLB(input$ppvLB)},
+            {ppv.ciUB(input$ppvUB)}), digits = 3 )
+  )
+  output$npv.95ci &lt;- renderText(
+    round(c({npv.ciLB(input$npvLB)},
+            {npv.ciUB(input$npvUB)}), digits = 3 )
+  )
+  output$kap.95ci &lt;- renderText(
+    round(c({kap.ciLB(input$kLB)},
+            {kap.ciUB(input$kUB)}), digits = 3 )
+  )
+  output$acc.95ci &lt;- renderText(
+    round(c({acc.ciLB(input$accLB)},
+            {acc.ciUB(input$accUB)}), digits = 3 )
+  )
+}
+
+
+#Create and launch the shiny app
+shinyApp(ui, server)</code></pre>
+
+
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /container fluid -->
+
+
+
+
+</body></html>
